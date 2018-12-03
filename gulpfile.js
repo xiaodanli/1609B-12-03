@@ -10,17 +10,22 @@ var concat = require('gulp-concat');
 
 var uglify = require('gulp-uglify');
 
+var server = require('gulp-webserver');
 gulp.task('server',function(){
-    browserSync({
-        server:{
-            baseDir:'src',
-            // middleware:function(req,res,next){
+    // return browserSync({
+    //     server:{
+    //         baseDir:'src',
+    //         // middleware:function(req,res,next){
 
-            // }
-        },
-        port:9090,
-        files:['src']
-    })
+    //         // }
+    //     },
+    //     port:9090
+    // })
+
+    return gulp.src('src')
+    .pipe(server({
+        port:9090
+    }))
 })
 
 //css
@@ -39,4 +44,13 @@ gulp.task('devJs',function(){
     .pipe(concat('all.js'))
     .pipe(gulp.dest('./src/js/minJs'))
 })
+
+//监听
+gulp.task('watch',function(){
+    gulp.watch('./src/scss/*.scss',gulp.series('devScss'))
+    gulp.watch('./src/js/*.js',gulp.series('devJs'))
+})
+
+gulp.task('default',gulp.series('devJs','devScss','server','watch'))
+
 
